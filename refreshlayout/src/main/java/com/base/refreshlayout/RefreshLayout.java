@@ -209,6 +209,8 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
             loadMareStatue = loadMareStatue_loading;
             if (backLoadMore != null) {
                 backLoadMore.loadMore();
+            }else{
+                endLoadMore(hasMore);
             }
         } else {
             endLoadMore(false);
@@ -262,9 +264,9 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
             ListAdapter adapter = lv.getAdapter();
             return adapter.getCount() <= 0 || index == 0 && !ViewCompat.canScrollVertically(lv, -1);
         } else if (refreshView instanceof ScrollView) {
-
+            return !ViewCompat.canScrollVertically(refreshView, -1);
         } else if (refreshView instanceof NestedScrollView) {
-
+            return !ViewCompat.canScrollVertically(refreshView, -1);
         }
         return false;
     }
@@ -293,9 +295,9 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
             ListAdapter adapter = lv.getAdapter();
             return adapter.getCount() <= 0 || (index == adapter.getCount() - 1) && !ViewCompat.canScrollVertically(lv, 1);
         } else if (refreshView instanceof ScrollView) {
-
+            return !ViewCompat.canScrollVertically(refreshView, 1);
         } else if (refreshView instanceof NestedScrollView) {
-
+            return !ViewCompat.canScrollVertically(refreshView, 1);
         }
         return false;
     }

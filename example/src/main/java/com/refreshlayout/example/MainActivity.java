@@ -68,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
             public void noMore() {
                 Toast.makeText(MainActivity.this, "没有更多数据", Toast.LENGTH_SHORT).show();
             }
-        }).setBottomRefreshViewMagnet(new DefultRefreshViewHold(this, DefultRefreshViewHold.BOTTOM_VIEW)).init();
+        }).setBottomRefreshViewMagnet(new DefultRefreshViewHold(this, DefultRefreshViewHold.BOTTOM_VIEW)
+        ).init();
 
         ListView lv = (ListView) findViewById(R.id.lv);
         lv.setAdapter(adapter = new BaseAdapter() {
