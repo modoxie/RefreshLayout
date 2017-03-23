@@ -7,7 +7,9 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.v4.view.ScrollingView;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -15,8 +17,13 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ScrollView;
 
 import com.base.refreshlayout.magnet.DefultRefreshViewHold;
 import com.base.refreshlayout.magnet.RefreshViewMagnet;
@@ -96,7 +103,10 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
         int children = getChildCount();
         for (int i = 0; i < children; i++) {
             View view = getChildAt(i);
-            if (view instanceof RecyclerView) {
+            if (view instanceof RecyclerView
+                    || view instanceof ListView
+                    || view instanceof ScrollView
+                    || view instanceof NestedScrollView) {
                 refreshView = view;
                 view.setOnTouchListener(this);
             }
@@ -246,6 +256,15 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
                 }
                 return min == 0;
             }
+        } else if (refreshView instanceof ListView) {
+            ListView lv = (ListView) refreshView;
+            int index = lv.getFirstVisiblePosition();
+            ListAdapter adapter = lv.getAdapter();
+            return adapter.getCount() <= 0 || index == 0 && !ViewCompat.canScrollVertically(lv, -1);
+        } else if (refreshView instanceof ScrollView) {
+
+        } else if (refreshView instanceof NestedScrollView) {
+
         }
         return false;
     }
@@ -268,6 +287,15 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
                 }
                 return max == manager.getItemCount() - 1;
             }
+        } else if (refreshView instanceof ListView) {
+            ListView lv = (ListView) refreshView;
+            int index = lv.getLastVisiblePosition();
+            ListAdapter adapter = lv.getAdapter();
+            return adapter.getCount() <= 0 || (index == adapter.getCount() - 1) && !ViewCompat.canScrollVertically(lv, 1);
+        } else if (refreshView instanceof ScrollView) {
+
+        } else if (refreshView instanceof NestedScrollView) {
+
         }
         return false;
     }
