@@ -38,7 +38,10 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
     public final static int loadMareStatue_no_more = 0x000008;
     private int loadMareStatue = loadMareStatue_end;
     private float ry, offsetY;
-
+    private BackRefresh backRefresh;
+    private BackLoadMore backLoadMore;
+    private BackNoMore backNoMore;
+    boolean hasMore;
 
     public RefreshLayout(@NonNull Context context) {
         super(context);
@@ -69,7 +72,23 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
         return this;
     }
 
+    public RefreshLayout setBackRefresh(BackRefresh backRefresh) {
+        this.backRefresh = backRefresh;
+        return this;
+    }
+
+    public RefreshLayout setBackLoadMore(BackLoadMore backLoadMore) {
+        this.backLoadMore = backLoadMore;
+        return this;
+    }
+
+    public RefreshLayout setBackNoMore(BackNoMore backNoMore) {
+        this.backNoMore = backNoMore;
+        return this;
+    }
+
     public void init() {
+        hasMore = true;
         if (headView == null) {
             headView = new DefultRefreshViewHold(getContext(), DefultRefreshViewHold.HEAD_VIEW);
             addView(headView.getView());
@@ -169,11 +188,40 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
     public void refresh() {
         headView.onChangStatus(loadMareStatue_r_loading, 1);
         loadMareStatue = loadMareStatue_r_loading;
+        if (backRefresh != null) {
+            backRefresh.refresh();
+        }
     }
 
     public void loadMore() {
-        if (bottomView != null) bottomView.onChangStatus(loadMareStatue_loading, 1);
-        loadMareStatue = loadMareStatue_loading;
+        if (hasMore) {
+            if (bottomView != null) bottomView.onChangStatus(loadMareStatue_loading, 1);
+            loadMareStatue = loadMareStatue_loading;
+            if (backLoadMore != null) {
+                backLoadMore.loadMore();
+            }
+        } else {
+            endLoadMore(false);
+            if (backNoMore != null) {
+                backNoMore.noMore();
+            }
+        }
+    }
+
+    public void endRefresh() {
+        hasMore = true;
+        ry = 0;
+        refreshView.setTranslationY(0);
+        loadMareStatue = loadMareStatue_end;
+        if (headView != null) headView.onChangStatus(loadMareStatue_end, 1);
+    }
+
+    public void endLoadMore(boolean hasMore) {
+        this.hasMore = hasMore;
+        ry = 0;
+        refreshView.setTranslationY(0);
+        loadMareStatue = loadMareStatue_end;
+        if (bottomView != null) headView.onChangStatus(loadMareStatue_end, 1);
     }
 
     @Override
@@ -222,5 +270,17 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
             }
         }
         return false;
+    }
+
+    public interface BackRefresh {
+        void refresh();
+    }
+
+    public interface BackLoadMore {
+        void loadMore();
+    }
+
+    public interface BackNoMore {
+        void noMore();
     }
 }
