@@ -179,6 +179,7 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
                     loadMareStatue = loadMareStatue_end;
                     ry = 0;
                     dy = 0;
+                    rv.scrollTo(0,0);
                     rv.setTranslationY(0);
                     if (bottomView != null) bottomView.onChangStatus(loadMareStatue_end, 1);
                     headView.onChangStatus(loadMareStatue_end, 1);
