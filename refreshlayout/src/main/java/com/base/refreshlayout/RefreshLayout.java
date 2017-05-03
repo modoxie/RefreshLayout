@@ -45,6 +45,7 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
     public final static int loadMareStatue_no_more = 0x000008;
     private int loadMareStatue = loadMareStatue_end;
     private float ry, offsetY;
+    boolean canUp, canDown;
     private BackRefresh backRefresh;
     private BackLoadMore backLoadMore;
     private BackNoMore backNoMore;
@@ -96,6 +97,8 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
 
     public void init() {
         hasMore = true;
+        canDown = true;
+        canUp = true;
         if (headView == null) {
             headView = new DefultRefreshViewHold(getContext(), DefultRefreshViewHold.HEAD_VIEW);
             addView(headView.getView());
@@ -139,7 +142,7 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
                     ry = event.getRawY();
                     return false;
                 }
-                if (dy < 0 && loadMareStatue == loadMareStatue_up || loadMareStatue == loadMareStatue_pre) {
+                if (dy < 0 && canUp && loadMareStatue == loadMareStatue_up || loadMareStatue == loadMareStatue_pre) {
                     if (bottomView != null) {
                         int height = bottomView.getView().getMeasuredHeight();
                         bottomView.getView().setTranslationY(dy > -height ? height + dy : 0);
@@ -155,7 +158,7 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
                         loadMareStatue = loadMareStatue_pre;
                         return true;
                     }
-                } else if (dy > 0 && loadMareStatue == loadMareStatue_down || loadMareStatue == loadMareStatue_r_pre) {
+                } else if (dy > 0 && canDown && loadMareStatue == loadMareStatue_down || loadMareStatue == loadMareStatue_r_pre) {
                     int height = headView.getView().getMeasuredHeight();
 //                        float y = dy - height;
                     headView.getView().setTranslationY(dy < height ? dy - height : 0);
@@ -196,7 +199,7 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
     }
 
     public void refresh() {
-        refreshView.scrollTo(0,0);
+        refreshView.scrollTo(0, 0);
         headView.onChangStatus(loadMareStatue_r_loading, 1);
         loadMareStatue = loadMareStatue_r_loading;
         if (backRefresh != null) {
@@ -210,7 +213,7 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
             loadMareStatue = loadMareStatue_loading;
             if (backLoadMore != null) {
                 backLoadMore.loadMore();
-            }else{
+            } else {
                 endLoadMore(hasMore);
             }
         } else {
@@ -313,5 +316,21 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
 
     public interface BackNoMore {
         void noMore();
+    }
+
+    public boolean isCanUp() {
+        return canUp;
+    }
+
+    public void setCanUp(boolean canUp) {
+        this.canUp = canUp;
+    }
+
+    public boolean isCanDown() {
+        return canDown;
+    }
+
+    public void setCanDown(boolean canDown) {
+        this.canDown = canDown;
     }
 }
