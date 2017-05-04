@@ -133,6 +133,9 @@ public class RefreshLayout extends FrameLayout implements View.OnTouchListener {
                     return false;
                 }
                 dy -= ry;
+                if ((dy < 0 && !canUp) || (dy > 0 && !canUp)) {
+                    dy = 0;
+                }
                 if (loadMareStatue == loadMareStatue_end) {
                     if (dy < 0 && isBottom() && ViewCompat.canScrollVertically(rv, -1)) {
                         loadMareStatue = loadMareStatue_up;
